@@ -4,6 +4,8 @@ Docker image for one-way replication with SymmtricDS
 This will be a [Docker] image for running simple, one-way replication
 using [SymmetricDS].
 
+*Please note, this image is not yet ready for production.*
+
 Getting started
 ---------------
 
