@@ -1,47 +1,46 @@
 version: "3"
 services:
-  postgres:
+  target:
     image: postgres
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
+      - POSTGRES_USER=target
+      - POSTGRES_PASSWORD=target
+      - POSTGRES_DB=target
     ports:
       - "5432:5432"
-  symds_postgres:
+  symds_target:
     build:
       context: .
     environment:
       - HTTPS=FALSE
       - GROUP_ID=target
-      - DB_HOST=postgres
+      - DB_HOST=target
       - DB_TYPE=postgres
-      - DB_NAME=postgres
-      - DB_USER=postgres
-      - DB_PASS=postgres
-      - SYNC_URL=http://symds_postgres:31415/sync/target
-      - REGISTRATION_URL=http://symds_mysql:31415/sync/source
-  symds_mysql:
+      - DB_NAME=target
+      - DB_USER=target
+      - DB_PASS=target
+      - SYNC_URL=http://symds_target:31415/sync/target
+      - REGISTRATION_URL=http://symds_source:31415/sync/source
+  symds_source:
     build:
       context: .
     environment:
       - HTTPS=FALSE
       - GROUP_ID=source
-      - DB_HOST=mysql
-      - DB_TYPE=mysql
-      - DB_NAME=mysql
-      - DB_USER=mysql
-      - DB_PASS=mysql
-      - SYNC_URL=http://symds_mysql:31415/sync/source
+      - DB_HOST=source
+      - DB_TYPE=postgres
+      - DB_NAME=source
+      - DB_USER=source
+      - DB_PASS=source
+      - SYNC_URL=http://symds_source:31415/sync/source
       - REPLICATE_TO=target
       - REPLICATE_TABLE=test
-  mysql:
+  source:
     build:
-      context: mysql-source
+      context: postgres-source
     environment:
-      - MYSQL_RANDOM_ROOT_PASSWORD=yes
-      - MYSQL_USER=mysql
-      - MYSQL_PASSWORD=mysql
-      - MYSQL_DATABASE=mysql
+      - POSTGRES_USER=source
+      - POSTGRES_PASSWORD=source
+      - POSTGRES_DB=source
     ports:
-      - "3306:3306"
+      - "5431:5432"
