@@ -21,27 +21,23 @@ services:
       - DB_PASS=postgres
       - SYNC_URL=http://symds_postgres:31415/sync/target
       - REGISTRATION_URL=http://symds_mysql:31415/sync/source
-  symds_mysql:
+  symds_oracle:
     build:
       context: .
     environment:
       - HTTPS=FALSE
       - GROUP_ID=source
-      - DB_HOST=mysql
-      - DB_TYPE=mysql
-      - DB_NAME=mysql
-      - DB_USER=mysql
-      - DB_PASS=mysql
-      - SYNC_URL=http://symds_mysql:31415/sync/source
+      - DB_HOST=oracle
+      - DB_TYPE=oracle
+      - DB_NAME=XE
+      - DB_USER=system
+      - DB_PASS=oracle
+      - SYNC_URL=http://symds_oracle:31415/sync/source
       - REPLICATE_TO=target
       - REPLICATE_TABLE=test
-  mysql:
+  oracle:
     build:
-      context: mysql-source
-    environment:
-      - MYSQL_RANDOM_ROOT_PASSWORD=yes
-      - MYSQL_USER=mysql
-      - MYSQL_PASSWORD=mysql
-      - MYSQL_DATABASE=mysql
+      context: oracle-source
     ports:
-      - "3306:3306"
+      - "1521:1521"
+      - "8080:8080"
