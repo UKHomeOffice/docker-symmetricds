@@ -31,7 +31,7 @@ License
 This project is licensed under the MIT License - see the [LICENSE.md]
 file for details.
 
-[contributors]:     https://github.com/UKHomeOffice/docker-nginx-proxy-govuk/graphs/contributors
+[contributors]:     https://github.com/UKHomeOffice/docker-symmetricds/graphs/contributors
 [daniel-ac-martin]: https://github.com/daniel-ac-martin
 [Docker]:           https://www.docker.com/
 [DockerCompose]:    https://docs.docker.com/compose/
