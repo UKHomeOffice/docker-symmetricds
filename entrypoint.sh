@@ -44,12 +44,14 @@ case "${DB_TYPE}" in
     DB_CMD="mysql -h \"${DB_HOST}\" -P \"${DB_POST}\" -u \"${DB_USER}\" -p\"${DB_PASS}\" \"${DB_NAME}\""
     JDBC_DRIVER="com.mysql.jdbc.Driver"
     JDBC_URL="jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}"
+    echo "Warning: There appears to be a bug in MySQL support."
     ;;
   "oracle")
-    DB_PORT="${DB_PORT:-1575}"
-    DB_CMD="sqlplus64 \"${DB_USER}/${DB_PASS}@//${DB_HOST}/${DB_NAME}\""
+    DB_PORT="${DB_PORT:-1521}"
+    DB_CMD="sqlplus64 \"${DB_USER}/${DB_PASS}@//${DB_HOST}:${DB_PORT}/${DB_NAME}\""
     JDBC_DRIVER="oracle.jdbc.driver.OracleDriver"
     JDBC_URL="jdbc:oracle:thin:@${DB_HOST}:${DB_PORT}:${DB_NAME}"
+    echo "Warning: Some docker images of Oracle will listen to their port before they are ready to accept connections which will break this image."
     ;;
   "postgres")
     DB_PORT="${DB_PORT:-5432}"
@@ -84,7 +86,13 @@ db.user=${DB_USER}
 db.password=${DB_PASS}
 EOL
 
-echo "Waiting for database..."
+if [[ ! -z "${REPLICATE_TO}" ]]; then
+  cat << EOL >> "./engines/${ENGINE_NAME}-${EXTERNAL_ID}.properties"
+initial.load.create.first=true
+EOL
+fi
+
+echo "Waiting for database at ${DB_HOST}:${DB_PORT}..."
 nc="nc ${DB_HOST} ${DB_PORT} </dev/null 2>/dev/null"
 set +e
 eval ${nc}
@@ -93,7 +101,6 @@ while [ $? -ne 0 ]; do
   sleep 5
   eval ${nc}
 done
-set -e
 
 if [[ ! -z "${REPLICATE_TO}" ]]; then
   echo "Initialising config in ${DB_TYPE}..."
