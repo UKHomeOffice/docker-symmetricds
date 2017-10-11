@@ -7,7 +7,7 @@ pipeline:
     commands:
       docker build -t symmetricds .
     when:
-      event: [pull_request, push, tag]
+      event: [pull_request, tag]
 
   push_image_to_quay:
     image: docker:1.11
