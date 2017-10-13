@@ -1,5 +1,5 @@
-Docker image for one-way replication with SymmtricDS
-====================================================
+Docker image for one-way replication with SymmetricDS
+=====================================================
 
 This will be a [Docker] image for running simple, one-way replication
 using [SymmetricDS].
