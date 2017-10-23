@@ -1,0 +1,104 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: symmetricds-target
+data:
+  https: 'FALSE'
+  group-id: 'target'
+  db-type: 'postgres'
+  db-host: 'postgres-host-name'
+  db-name: 'name-of-database'
+  sync-url: 'http://symmetricds-target.your-namespace.svc.cluster.local/sync/target'
+  registration-url: 'http://symmetricds-source.your-namespace.svc.cluster.local/sync/source'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: symmetricds-target
+  labels:
+    name: symmetricds-target
+    role: service
+spec:
+  ports:
+  - name: http
+    port: 80
+    targetPort: 31415
+  selector:
+    name: symmetricds-target
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: symmetricds-target
+  labels:
+    name: symmetricds-target
+    role: deployment
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: symmetricds-target
+        role: pod
+    spec:
+      containers:
+        - name: symmetricds
+          image: quay.io/ukhomeofficedigital/symmetricds:v0.1.2
+          env:
+            - name: HTTPS
+              valueFrom:
+                configMapKeyRef:
+                  name: symmetricds-target
+                  key: https
+            - name: GROUP_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: symmetricds-target
+                  key: group-id
+            - name: DB_TYPE
+              valueFrom:
+                configMapKeyRef:
+                  name: symmetricds-target
+                  key: db-type
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: symmetricds-target
+                  key: db-host
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: symmetricds-target
+                  key: db-name
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-creds
+                  key: username
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: db-creds
+                  key: password
+            - name: SYNC_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: symmetricds-target
+                  key: sync-url
+            - name: REGISTRATION_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: symmetricds-target
+                  key: registration-url
+          resources:
+            limits:
+              cpu: 400m
+              memory: 1024Mi
+            requests:
+              cpu: 200m
+              memory: 512Mi
+          ports:
+            - containerPort: 31415
+              name: symmetricds
+              protocol: TCP
