@@ -1,0 +1,67 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: symmetricds-target
+data:
+  db-password: 'db_password'
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: symmetricds-target
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: symmetricds-target
+    spec:
+      containers:
+        - name: symmetricds
+          image: quay.io/ukhomeofficedigital/symmetricds:v0.1.2
+          env:
+            - name: HTTPS
+              value: 'FALSE'
+            - name: GROUP_ID
+              value: 'target'
+            - name: DB_TYPE
+              value: 'postgres'
+            - name: DB_HOST
+              value: 'postgres-hostname'
+            - name: DB_NAME
+              value: 'target_database'
+            - name: DB_USER
+              value: 'db_username'
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: symmetricds-target
+              value: 'db_password'
+            - name: SYNC_URL
+              value: 'http://symmetricds-target/sync/target'
+            - name: REGISTRATION_URL
+              value: 'http://symmetricds-source/sync/source'
+          resources:
+            limits:
+              cpu: 400m
+              memory: 1024Mi
+            requests:
+              cpu: 200m
+              memory: 512Mi
+          ports:
+            - containerPort: 31415
+              name: symmetricds
+              protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: symmetricds-target
+spec:
+  ports:
+  - name: http
+    port: 80
+    targetPort: 31415
+  selector:
+    name: symmetricds-target
