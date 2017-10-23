@@ -44,15 +44,9 @@ spec:
             - name: DB_NAME
               value: 'target_database'
             - name: DB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: db-creds
-                  key: username
+              value: 'db_username'
             - name: DB_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: db-creds
-                  key: password
+              value: 'db_password'
             - name: SYNC_URL
               value: 'http://symmetricds-target.your-namespace.svc.cluster.local/sync/target'
             - name: REGISTRATION_URL
