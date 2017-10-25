@@ -10,7 +10,7 @@ RUN yum install -y -q java-1.8.0-openjdk nmap-ncat unzip \
 USER symds
 WORKDIR /app
 
-ENV SYMMETRICDS_VERSION 3.8.29
+ENV SYMMETRICDS_VERSION 3.8.30
 
 RUN MINOR=`echo "${SYMMETRICDS_VERSION}" | sed 's/\.[^.]*$//'` \
  && curl -L -o 'symmetricds.zip' "https://downloads.sourceforge.net/project/symmetricds/symmetricds/symmetricds-${MINOR}/symmetric-server-${SYMMETRICDS_VERSION}.zip" \
