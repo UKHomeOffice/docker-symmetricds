@@ -22,6 +22,9 @@ services:
       - PASSWORD=pass
       - SYNC_URL=https://symds_target:31417/sync/target
       - REGISTRATION_URL=https://symds_source:31417/sync/source
+      - HTTPS_CRT=${TARGET_CRT}
+      - HTTPS_KEY=${TARGET_KEY}
+      - HTTPS_CA_BUNDLE=${SOURCE_CRT}
     ports:
       - "31425:31415"
       - "31427:31417"
@@ -38,6 +41,9 @@ services:
       - USERNAME=user
       - PASSWORD=pass
       - SYNC_URL=https://symds_source:31417/sync/source
+      - HTTPS_CRT=${SOURCE_CRT}
+      - HTTPS_KEY=${SOURCE_KEY}
+      - HTTPS_CA_BUNDLE=${TARGET_CRT}
       - REPLICATE_TO=target
       - REPLICATE_TABLE=test
     ports:
