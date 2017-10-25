@@ -12,7 +12,6 @@ services:
     build:
       context: .
     environment:
-      - HTTPS=TRUE
       - GROUP_ID=target
       - DB_HOST=target
       - DB_TYPE=postgres
@@ -30,7 +29,6 @@ services:
     build:
       context: .
     environment:
-      - HTTPS=TRUE
       - GROUP_ID=source
       - DB_HOST=source
       - DB_TYPE=postgres
