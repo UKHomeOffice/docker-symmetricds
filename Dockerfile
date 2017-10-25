@@ -1,6 +1,6 @@
 FROM quay.io/ukhomeofficedigital/centos-base:latest
 
-RUN yum install -y -q java-1.8.0-openjdk nmap-ncat unzip \
+RUN yum install -y -q java-1.8.0-openjdk nmap-ncat openssl unzip \
  && yum update -y -q \
  && yum clean all \
  && rpm --rebuilddb \

@@ -38,6 +38,34 @@ else
   LISTEN_PORT="${LISTEN_PORT:-31417}"
   HTTPS_ENABLE="true"
   HTTPS_PORT="${LISTEN_PORT:-${HTTPS_PORT}}"
+
+  p="changeit"
+
+  if [[ ! -z "${HTTPS_CRT}" ]]; then
+    cd security
+    rm keystore
+    mkdir -p .keystore
+    echo -n "${HTTPS_CRT}" | base64 -d > .keystore/crt
+    echo -n "${HTTPS_KEY}" | base64 -d > .keystore/key
+    openssl pkcs12 -export -out .keystore/keystore.p12 -inkey .keystore/key -in .keystore/crt -name "sym" -passout "pass:${p}"
+    keytool -importkeystore -noprompt \
+            -srckeystore .keystore/keystore.p12 -srcstoretype PKCS12 -srcstorepass "${p}" -srcalias "sym" \
+            -destkeystore keystore -deststoretype jceks -deststorepass "${p}" -destalias "sym"
+    rm -rf .keystore
+    cd ..
+  fi
+
+  if [[ ! -z "${HTTPS_CA_BUNDLE}" ]]; then
+    cd security
+    rm cacerts
+    mkdir -p .cacerts
+    echo -n "${HTTPS_CA_BUNDLE}" | base64 -d > .cacerts/bundle
+    keytool -importcert -noprompt \
+            -keystore cacerts -storepass "${p}" -storetype jks \
+            -file .cacerts/bundle
+    rm -rf tmp-cacerts
+    cd ..
+  fi
 fi
 
 case "${DB_TYPE}" in
