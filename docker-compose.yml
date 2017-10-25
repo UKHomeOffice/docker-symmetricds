@@ -24,6 +24,7 @@ services:
       - SYNC_URL=https://symds_target:31417/sync/target
       - REGISTRATION_URL=https://symds_source:31417/sync/source
     ports:
+      - "31425:31415"
       - "31427:31417"
   symds_source:
     build:
@@ -42,6 +43,7 @@ services:
       - REPLICATE_TO=target
       - REPLICATE_TABLE=test
     ports:
+      - "31415:31415"
       - "31417:31417"
   source:
     build:
