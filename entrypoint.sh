@@ -70,7 +70,7 @@ http.enable=${HTTP_ENABLE}
 http.port=${HTTP_PORT}
 https.enable=${HTTPS_ENABLE}
 https.port=${HTTPS_PORT}
-https.allow.self.signed.certs=true
+https.allow.self.signed.certs=false
 jmx.http.enable=false
 jmx.http.port=31416
 EOL
