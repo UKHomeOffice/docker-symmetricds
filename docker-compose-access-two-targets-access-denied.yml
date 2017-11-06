@@ -8,6 +8,14 @@ services:
       - POSTGRES_DB=target
     ports:
       - "5432:5432"
+  target2:
+    image: postgres
+    environment:
+      - POSTGRES_USER=target2
+      - POSTGRES_PASSWORD=target2
+      - POSTGRES_DB=target2
+    ports:
+      - "5432:5432"
   symds_target:
     build:
       context: .
@@ -25,6 +33,21 @@ services:
       - REGISTRATION_URL=http://symds_source:31415/sync/source
     ports:
       - "31425:31415"
+  access_denied_target:
+    build:
+      context: .
+    environment:
+      - HTTPS=FALSE
+      - GROUP_ID=target2
+      - DB_HOST=target2
+      - DB_TYPE=postgres
+      - DB_NAME=target2
+      - DB_USER=target2
+      - DB_PASS=target2
+      - USERNAME=wrong
+      - PASSWORD=password
+      - SYNC_URL=http://access_denied_target:31415/sync/target
+      - REGISTRATION_URL=http://symds_source:31415/sync/source
   symds_source:
     build:
       context: .
