@@ -18,8 +18,8 @@ DB_TYPE="${DB_TYPE:-postgres}"
 DB_NAME="${DB_NAME:-DB_NAME}"
 DB_USER="${DB_USER:-DB_USER}"
 DB_PASS="${DB_PASS:-DB_PASS}"
-AUTH_USER="${AUTH_USER:-''}"
-AUTH_PASS="${AUTH_PASS:-''}"
+USERNAME="${USERNAME:-''}"
+PASSWORD="${PASSWORD:-''}"
 SYNC_URL="${SYNC_URL}"
 REGISTRATION_URL="${REGISTRATION_URL}"
 REPLICATE_TO="${REPLICATE_TO}"
@@ -86,8 +86,8 @@ db.driver=${JDBC_DRIVER}
 db.url=${JDBC_URL}
 db.user=${DB_USER}
 db.password=${DB_PASS}
-http.basic.auth.username=${AUTH_USER}
-http.basic.auth.password=${AUTH_PASS}
+http.basic.auth.username=${USERNAME}
+http.basic.auth.password=${PASSWORD}
 EOL
 
 if [[ ! -z "${REPLICATE_TO}" ]]; then
@@ -99,7 +99,7 @@ fi
 # basic auth setup!!
 sed -i "s|</web-app>|<security-constraint><web-resource-collection><url-pattern>/sync/*</url-pattern></web-resource-collection><auth-constraint><role-name>user</role-name></auth-constraint></security-constraint><login-config><auth-method>BASIC</auth-method><realm-name>default</realm-name></login-config></web-app>|" ./web/WEB-INF/web.xml
 
-echo -n "${AUTH_USER}: ${AUTH_PASS},user" >> ./web/WEB-INF/realm.properties
+echo -n "${USERNAME}: ${PASSWORD},user" >> ./web/WEB-INF/realm.properties
 
 echo -e "<Configure class=\"org.eclipse.jetty.webapp.WebAppContext\"> \n
 <Get name=\"securityHandler\"> \n

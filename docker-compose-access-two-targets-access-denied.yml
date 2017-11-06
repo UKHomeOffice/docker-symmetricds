@@ -27,8 +27,8 @@ services:
       - DB_NAME=target
       - DB_USER=target
       - DB_PASS=target
-      - AUTH_USER=user
-      - AUTH_PASS=pass
+      - USERNAME=user
+      - PASSWORD=pass
       - SYNC_URL=http://symds_target:31415/sync/target
       - REGISTRATION_URL=http://symds_source:31415/sync/source
     ports:
@@ -44,8 +44,8 @@ services:
       - DB_NAME=target2
       - DB_USER=target2
       - DB_PASS=target2
-      - AUTH_USER=wrong
-      - AUTH_PASS=password
+      - USERNAME=wrong
+      - PASSWORD=password
       - SYNC_URL=http://access_denied_target:31415/sync/target
       - REGISTRATION_URL=http://symds_source:31415/sync/source
   symds_source:
@@ -59,8 +59,8 @@ services:
       - DB_NAME=source
       - DB_USER=source
       - DB_PASS=source
-      - AUTH_USER=user
-      - AUTH_PASS=pass
+      - USERNAME=user
+      - PASSWORD=pass
       - SYNC_URL=http://symds_source:31415/sync/source
       - REPLICATE_TO=target
       - REPLICATE_TABLE=test
