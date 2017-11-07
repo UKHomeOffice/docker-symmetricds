@@ -63,7 +63,7 @@ services:
       - PASSWORD=pass
       - SYNC_URL=http://symds_source:31415/sync/source
       - REPLICATE_TO=target
-      - REPLICATE_TABLE=test
+      - REPLICATE_TABLES=test
     ports:
       - "31415:31415"
   source:

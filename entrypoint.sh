@@ -23,7 +23,7 @@ PASSWORD="${PASSWORD:-''}"
 SYNC_URL="${SYNC_URL}"
 REGISTRATION_URL="${REGISTRATION_URL}"
 REPLICATE_TO="${REPLICATE_TO}"
-REPLICATE_TABLE="${REPLICATE_TABLE}"
+REPLICATE_TABLES="${REPLICATE_TABLES}"
 
 # Build other variables
 HTTP_ENABLE="false"
@@ -170,21 +170,25 @@ insert into sym_router (router_id,
         source_node_group_id, target_node_group_id, create_time,
         last_update_time) values ('${GROUP_ID}-2-${REPLICATE_TO}','${GROUP_ID}', '${REPLICATE_TO}',
         current_timestamp, current_timestamp);
+EOL
 
-insert into sym_channel (channel_id, processing_order, max_batch_size, max_batch_to_send,
-         extract_period_millis, batch_algorithm, enabled)
-     values ('${REPLICATE_TABLE}', 10, 1000, 10, 0, 'default', 1);
+for REPLICATE_TABLE in $REPLICATE_TABLES
+do
+echo "Adding config for $REPLICATE_TABLE in ${DB_TYPE}..."
+cat << EOL >> "init.sql"
+insert into sym_channel
+(channel_id, processing_order, max_batch_size, max_batch_to_send, extract_period_millis, batch_algorithm, enabled)
+      values ('${REPLICATE_TABLE}', 10, 1000, 10, 0, 'default', 1);
 
-insert into sym_trigger (trigger_id, source_table_name,
-          channel_id, last_update_time, create_time)
-                  values ('${REPLICATE_TABLE}', '${REPLICATE_TABLE}', '${REPLICATE_TABLE}', current_timestamp, current_timestamp);
+insert into sym_trigger
+(trigger_id, source_table_name, channel_id, last_update_time, create_time)
+      values ('${REPLICATE_TABLE}', '${REPLICATE_TABLE}', '${REPLICATE_TABLE}', current_timestamp, current_timestamp);
 
 insert into sym_trigger_router
-        (trigger_id, router_id, initial_load_order, create_time,
-        last_update_time) values ('${REPLICATE_TABLE}', '${GROUP_ID}-2-${REPLICATE_TO}', 1, current_timestamp,
-        current_timestamp);
-
+(trigger_id, router_id, initial_load_order, create_time, last_update_time)
+      values ('${REPLICATE_TABLE}', '${GROUP_ID}-2-${REPLICATE_TO}', 1, current_timestamp, current_timestamp);
 EOL
+done
 
   ./bin/symadmin --engine "${GROUP_ID}" create-sym-tables
   ./bin/dbimport --engine "${GROUP_ID}" "init.sql"
