@@ -45,7 +45,7 @@ services:
       - HTTPS_KEY=${SOURCE_KEY}
       - HTTPS_CA_BUNDLE=${TARGET_CRT}
       - REPLICATE_TO=target
-      - REPLICATE_TABLES=test other_table
+      - REPLICATE_TABLES=test other_table|name
     ports:
       - "31415:31415"
       - "31417:31417"
