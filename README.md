@@ -18,10 +18,42 @@ $ cd docker-symmetricds
 $ docker-compose up
 ```
 
+Configuration
+-------------
+
+Configuration is available using environment variables in order to configure the symmetric container.
+
+```
+GROUP_ID: <Node Group that this Node is a member of.>
+DB_HOST: <Database host name>
+DB_TYPE: <Used to tell symmetric what JDBC driver to use. Can be mysql, postgres or oracle. Defaults to postgres.>
+DB_NAME: <Database name>
+DB_USER: <Database user>
+DB_PASS: <Database password
+USERNAME: <Username for basic auth>
+PASSWORD: <Password for basic auth>
+SYNC_URL: <URL where this Node can be contacted for synchronization. At startup and during each heartbeat, the Node updates its entry in the database with this URL>
+REGISTRATION_URL: <URL where this Node can connect for registration to receive its configuration. The registration server is part of SymmetricDS and is enabled as part of the deployment>
+HTTPS: <A flag to allow TLS termination. Defaults to TRUE.>
+HTTPS_CRT: <HTTPS certificate to use if terminating TLS.
+HTTPS_KEY: <Key for provided certificate.>
+HTTPS_CA_BUNDLE: <Certificate authority for HTTPS.>
+REPLICATE_TO: <Name of symmetric GROUP_ID to replicate to.>
+REPLICATE_TABLES: <Name of tables (space seperated) and optional columns to replicate (columns are specified with a pipe and the comma separation).
+```
+
+Example Usage
+-------------
+
+You can check out a pretty standard example of a replication using a source and target (postgres to postgres) using the following [docker-compose].
+
+To see basic auth in action please check out [docker-compose-basic-auth].
+
 Authors
 -------
 
 * **Daniel A.C. Martin** - *Initial work* - [daniel-ac-martin]
+* **Ben Marvell** - *TLS, Basic Auth, Multiple table and field replication* - [easternbloc]
 
 See also the list of [contributors] who participated in this project.
 
@@ -31,10 +63,13 @@ License
 This project is licensed under the MIT License - see the [LICENSE.md]
 file for details.
 
-[contributors]:     https://github.com/UKHomeOffice/docker-symmetricds/graphs/contributors
-[daniel-ac-martin]: https://github.com/daniel-ac-martin
-[Docker]:           https://www.docker.com/
-[DockerCompose]:    https://docs.docker.com/compose/
-[LICENSE.md]:       LICENSE.md
-[SymmetricDS]:      https://www.symmetricds.org/
+[contributors]:              https://github.com/UKHomeOffice/docker-symmetricds/graphs/contributors
+[daniel-ac-martin]:          https://github.com/daniel-ac-martin
+[easternbloc]:               https://github.com/easternbloc
+[Docker]:                    https://www.docker.com/
+[DockerCompose]:             https://docs.docker.com/compose/
+[LICENSE.md]:                LICENSE.md
+[SymmetricDS]:               https://www.symmetricds.org/
+[docker-compose]:            docker-compose.yml
+[docker-compose-basic-auth]: docker-compose-basic-auth.yml
 
