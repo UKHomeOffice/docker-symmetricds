@@ -26,36 +26,29 @@ REPLICATE_TO="${REPLICATE_TO}"
 REPLICATE_TABLES="${REPLICATE_TABLES}"
 REPLICATE_COLS=""
 
-# exit on no registration_url
-if [[ "$REGISTRATION_URL" != "" ]]; then
-  echo "You must set REGISTRATION_URL" && exit 1;
+function mandatoryCheck () {
+  if [[ -z "${1}" ]]; then
+    echo "You must set ${2}" && exit 1;
+  fi
+}
+
+mandatoryCheck "${SYNC_URL}" "SYNC_URL"
+mandatoryCheck "${DB_NAME}" "DB_NAME"
+mandatoryCheck "${DB_USER}" "DB_USER"
+mandatoryCheck "${DB_PASS}" "DB_PASS"
+
+# these must be set if it's in source mode
+if [[ -z "${REGISTRATION_URL}" ]]; then
+  mandatoryCheck "${REPLICATE_TO}" "REPLICATE_TO"
+  mandatoryCheck "${REPLICATE_TABLES}" "REPLICATE_TABLES"
 fi
 
-# exit on no replicate_tables
-if [[ "$REPLICATE_TABLES" != "" ]]; then
-  echo "You must set REPLICATE_TABLES" && exit 1;
-fi
-
-# exit on no sync_url
-if [[ "$SYNC_URL" != "" ]]; then
-  echo "You must set SYNC_URL" && exit 1;
-fi
-
-# exit on no replicate_to
-if [[ "$REPLICATE_TO" != "" ]]; then
-  echo "You must set REPLICATE_TO" && exit 1;
-fi
-
-# exit if db creds have not been set
-if [[ "$DB_NAME" != "" ]] || [[ "$DB_USER" != "" ]] || [[ "$DB_PASS" != "" ]] || [[ "$DB_PORT" != "" ]]; then
-  echo "You must set DB_NAME, DB_USER and DB_PASS" && exit 1;
-fi
 
 # exit early if only username or password is set but not both!
-if [[ "$USERNAME" != "" ]] && [[ "$PASSWORD" == "" ]]; then
+if [[ -n "${USERNAME}" && -z "${PASSWORD}" ]]; then
    echo "You must set env PASSWORD" && exit 1;
 fi
-if [[ "$PASSWORD" != "" ]] && [[ "$USERNAME" == "" ]]; then
+if [[ -z "$PASSWORD" && -n "$USERNAME" ]]; then
    echo "You must set env USERNAME" && exit 1;
 fi
 
@@ -76,9 +69,9 @@ else
   p="changeit"
 
   if [[ ! -z "${HTTPS_CRT}" ]]; then
-    if [[ "$HTTPS_KEY" == "" ]]; then
-       echo "You must set env HTTPS_KEY" && exit 1;
-    fi
+
+    mandatoryCheck "${HTTPS_KEY}" "HTTPS_KEY"
+
     cd security
     rm keystore
     mkdir -p .keystore
