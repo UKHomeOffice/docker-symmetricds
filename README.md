@@ -49,6 +49,11 @@ You can check out a pretty standard example of a replication using a source and 
 
 To see basic auth in action please check out [docker-compose-basic-auth].
 
+Example k8s
+-----------
+
+A basic example of a k8s deployment for [target-mode].
+
 Authors
 -------
 
@@ -73,4 +78,5 @@ file for details.
 [SymmetricDSGroups]          https://www.symmetricds.org/doc/3.8/html/user-guide.html#_groups
 [docker-compose]:            docker-compose.yml
 [docker-compose-basic-auth]: docker-compose-basic-auth.yml
+[target-mode]:               k8s/target.yaml
 
