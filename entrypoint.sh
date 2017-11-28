@@ -45,11 +45,11 @@ fi
 
 
 # exit early if only username or password is set but not both!
-if [[ -n "${USERNAME}" && -z "${PASSWORD}" ]]; then
-   echo "You must set env PASSWORD" && exit 1;
+if [[ -n "${USERNAME}" ]]; then
+   mandatoryCheck "${PASSWORD}" "PASSWORD"
 fi
-if [[ -z "$PASSWORD" && -n "$USERNAME" ]]; then
-   echo "You must set env USERNAME" && exit 1;
+if [[ -n "$PASSWORD" ]]; then
+   mandatoryCheck "${USERNAME}" "USERNAME"
 fi
 
 # Build other variables
