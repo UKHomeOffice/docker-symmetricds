@@ -15,16 +15,42 @@ EXTERNAL_ID="${EXTERNAL_ID:-${GROUP_ID}}"
 DB_HOST="${DB_HOST:-localhost}"
 DB_PORT="${DB_PORT}"
 DB_TYPE="${DB_TYPE:-postgres}"
-DB_NAME="${DB_NAME:-DB_NAME}"
-DB_USER="${DB_USER:-DB_USER}"
-DB_PASS="${DB_PASS:-DB_PASS}"
-USERNAME="${USERNAME:-''}"
-PASSWORD="${PASSWORD:-''}"
+DB_NAME="${DB_NAME}"
+DB_USER="${DB_USER}"
+DB_PASS="${DB_PASS}"
+USERNAME="${USERNAME}"
+PASSWORD="${PASSWORD}"
 SYNC_URL="${SYNC_URL}"
 REGISTRATION_URL="${REGISTRATION_URL}"
 REPLICATE_TO="${REPLICATE_TO}"
 REPLICATE_TABLES="${REPLICATE_TABLES}"
 REPLICATE_COLS=""
+
+function mandatoryCheck () {
+  if [[ -z "${1}" ]]; then
+    echo "You must set ${2}" && exit 1;
+  fi
+}
+
+mandatoryCheck "${SYNC_URL}" "SYNC_URL"
+mandatoryCheck "${DB_NAME}" "DB_NAME"
+mandatoryCheck "${DB_USER}" "DB_USER"
+mandatoryCheck "${DB_PASS}" "DB_PASS"
+
+# these must be set if it's in source mode
+if [[ -z "${REGISTRATION_URL}" ]]; then
+  mandatoryCheck "${REPLICATE_TO}" "REPLICATE_TO"
+  mandatoryCheck "${REPLICATE_TABLES}" "REPLICATE_TABLES"
+fi
+
+
+# exit early if only username or password is set but not both!
+if [[ -n "${USERNAME}" ]]; then
+   mandatoryCheck "${PASSWORD}" "PASSWORD"
+fi
+if [[ -n "$PASSWORD" ]]; then
+   mandatoryCheck "${USERNAME}" "USERNAME"
+fi
 
 # Build other variables
 HTTP_ENABLE="false"
@@ -43,6 +69,9 @@ else
   p="changeit"
 
   if [[ ! -z "${HTTPS_CRT}" ]]; then
+
+    mandatoryCheck "${HTTPS_KEY}" "HTTPS_KEY"
+
     cd security
     rm keystore
     mkdir -p .keystore
