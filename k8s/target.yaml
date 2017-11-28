@@ -34,10 +34,11 @@ spec:
             - name: DB_USER
               value: 'db_username'
             - name: DB_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: symmetricds-target
               value: 'db_password'
+            - name: USERNAME
+              value: 'user'
+            - name: PASSWORD
+              value: 'pass'
             - name: SYNC_URL
               value: 'http://symmetricds-target/sync/target'
             - name: REGISTRATION_URL
