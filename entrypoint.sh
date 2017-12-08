@@ -68,7 +68,7 @@ else
 
   p="changeit"
 
-  if [[ ! -z "${HTTPS_CRT}" ]]; then
+  if [[ -n "${HTTPS_CRT}" ]]; then
 
     mandatoryCheck "${HTTPS_KEY}" "HTTPS_KEY"
 
@@ -85,7 +85,7 @@ else
     cd ..
   fi
 
-  if [[ ! -z "${HTTPS_CA_BUNDLE}" ]]; then
+  if [[ -n "${HTTPS_CA_BUNDLE}" ]]; then
     cd security
     rm cacerts
     mkdir -p .cacerts
@@ -147,7 +147,7 @@ http.basic.auth.username=${USERNAME}
 http.basic.auth.password=${PASSWORD}
 EOL
 
-if [[ ! -z "${REPLICATE_TO}" ]]; then
+if [[ -n "${REPLICATE_TO}" ]]; then
   cat << EOL >> "./engines/${ENGINE_NAME}-${EXTERNAL_ID}.properties"
 initial.load.create.first=true
 EOL
@@ -181,7 +181,7 @@ while [ $? -ne 0 ]; do
   eval ${nc}
 done
 
-if [[ ! -z "${REPLICATE_TO}" ]]; then
+if [[ -n "${REPLICATE_TO}" ]]; then
   echo "Initialising config in ${DB_TYPE}..."
   cat << EOL > "init.sql"
 insert into sym_node_group
