@@ -75,7 +75,7 @@ file for details.
 [DockerCompose]:             https://docs.docker.com/compose/
 [LICENSE.md]:                LICENSE.md
 [SymmetricDS]:               https://www.symmetricds.org/
-[SymmetricDSGroups]          https://www.symmetricds.org/doc/3.8/html/user-guide.html#_groups
+[SymmetricDSGroups]:         https://www.symmetricds.org/doc/3.8/html/user-guide.html#_groups
 [docker-compose]:            docker-compose.yml
 [docker-compose-basic-auth]: docker-compose-basic-auth.yml
 [target-mode]:               k8s/target.yaml
