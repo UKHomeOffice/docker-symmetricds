@@ -143,8 +143,6 @@ db.driver=${JDBC_DRIVER}
 db.url=${JDBC_URL}
 db.user=${DB_USER}
 db.password=${DB_PASS}
-http.basic.auth.username=${USERNAME}
-http.basic.auth.password=${PASSWORD}
 EOL
 
 if [[ -n "${REPLICATE_TO}" ]]; then
@@ -153,6 +151,7 @@ initial.load.create.first=true
 EOL
 fi
 
+if [[ -z "${USERNAME}" && -z "${PASSWORD}" ]]; then
 # basic auth setup!!
 sed -i "s|</web-app>|<security-constraint><web-resource-collection><url-pattern>/sync/*</url-pattern></web-resource-collection><auth-constraint><role-name>user</role-name></auth-constraint></security-constraint><login-config><auth-method>BASIC</auth-method><realm-name>default</realm-name></login-config></web-app>|" ./web/WEB-INF/web.xml
 
@@ -169,7 +168,12 @@ echo -e "<Configure class=\"org.eclipse.jetty.webapp.WebAppContext\"> \n
 </Get> \n
 </Configure>" >> ./web/WEB-INF/jetty-web.xml
 
+cat << EOL >> "./engines/${ENGINE_NAME}-${EXTERNAL_ID}.properties"
+http.basic.auth.username=${USERNAME}
+http.basic.auth.password=${PASSWORD}
+EOL
 #end of basic auth setup
+fi
 
 echo "Waiting for database at ${DB_HOST}:${DB_PORT}..."
 nc="nc ${DB_HOST} ${DB_PORT} </dev/null 2>/dev/null"
