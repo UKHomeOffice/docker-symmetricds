@@ -28,11 +28,11 @@ services:
   symds_source:
     build:
       context: .
-    command: bash -c "sleep 120 && ./entrypoint.sh"
+    command: bash -c "sleep 420 && ./entrypoint.sh"
     environment:
       - HTTPS=FALSE
       - GROUP_ID=source
-      - DB_HOST=oracle
+      - DB_HOST=source
       - DB_TYPE=oracle
       - DB_NAME=XE
       - DB_USER=system
