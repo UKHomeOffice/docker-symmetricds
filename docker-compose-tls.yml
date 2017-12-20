@@ -12,15 +12,17 @@ services:
     build:
       context: .
     environment:
-      - HTTPS=FALSE
       - GROUP_ID=target
       - DB_HOST=target
       - DB_TYPE=postgres
       - DB_NAME=target
       - DB_USER=target
       - DB_PASS=target
-      - SYNC_URL=http://symds_target:31415/sync/target
-      - REGISTRATION_URL=http://symds_source:31415/sync/source
+      - SYNC_URL=https://symds_target:31417/sync/target
+      - REGISTRATION_URL=https://symds_source:31417/sync/source
+      - HTTPS_CRT=${TARGET_CRT}
+      - HTTPS_KEY=${TARGET_KEY}
+      - HTTPS_CA_BUNDLE=${SOURCE_CRT}
     ports:
       - "31425:31415"
       - "31427:31417"
@@ -28,14 +30,16 @@ services:
     build:
       context: .
     environment:
-      - HTTPS=FALSE
       - GROUP_ID=source
       - DB_HOST=source
       - DB_TYPE=postgres
       - DB_NAME=source
       - DB_USER=source
       - DB_PASS=source
-      - SYNC_URL=http://symds_source:31415/sync/source
+      - SYNC_URL=https://symds_source:31417/sync/source
+      - HTTPS_CRT=${SOURCE_CRT}
+      - HTTPS_KEY=${SOURCE_KEY}
+      - HTTPS_CA_BUNDLE=${TARGET_CRT}
       - REPLICATE_TO=target
       - REPLICATE_TABLES=test other_table|name
     ports:
