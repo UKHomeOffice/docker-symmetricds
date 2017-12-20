@@ -18,8 +18,6 @@ services:
       - DB_NAME=target
       - DB_USER=target
       - DB_PASS=target
-      - USERNAME=user
-      - PASSWORD=pass
       - SYNC_URL=https://symds_target:31417/sync/target
       - REGISTRATION_URL=https://symds_source:31417/sync/source
       - HTTPS_CRT=${TARGET_CRT}
@@ -38,8 +36,6 @@ services:
       - DB_NAME=source
       - DB_USER=source
       - DB_PASS=source
-      - USERNAME=user
-      - PASSWORD=pass
       - SYNC_URL=https://symds_source:31417/sync/source
       - HTTPS_CRT=${SOURCE_CRT}
       - HTTPS_KEY=${SOURCE_KEY}
