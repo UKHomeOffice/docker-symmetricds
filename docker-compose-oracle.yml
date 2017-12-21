@@ -1,0 +1,51 @@
+version: "3"
+services:
+  target:
+    image: postgres
+    environment:
+      - POSTGRES_USER=target
+      - POSTGRES_PASSWORD=target
+      - POSTGRES_DB=target
+    ports:
+      - "5432:5432"
+  symds_target:
+    build:
+      context: .
+    environment:
+      - HTTPS=FALSE
+      - GROUP_ID=target
+      - DB_HOST=target
+      - DB_TYPE=postgres
+      - DB_NAME=target
+      - DB_USER=target
+      - DB_PASS=target
+      - SYNC_URL=http://symds_target:31415/sync/target
+      - REGISTRATION_URL=http://symds_source:31415/sync/source
+    ports:
+      - "31425:31415"
+      - "31427:31417"
+
+  symds_source:
+    build:
+      context: .
+    command: bash -c "sleep 420 && ./entrypoint.sh"
+    environment:
+      - HTTPS=FALSE
+      - GROUP_ID=source
+      - DB_HOST=source
+      - DB_TYPE=oracle
+      - DB_NAME=XE
+      - DB_USER=system
+      - DB_PASS=oracle
+      - SYNC_URL=http://symds_source:31415/sync/source
+      - REPLICATE_TO=target
+      - REPLICATE_TABLES=test
+    ports:
+      - "31415:31415"
+      - "31417:31417"
+  source:
+    build:
+      context: oracle-source
+    ports:
+      - "1521:1521"
+      - "8080:8080"
