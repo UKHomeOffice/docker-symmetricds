@@ -11,7 +11,6 @@ services:
   symds_target:
     build:
       context: .
-      dockerfile: Dockerfile-old
     environment:
       - HTTPS=FALSE
       - GROUP_ID=target
@@ -29,7 +28,6 @@ services:
   symds_source:
     build:
       context: .
-      dockerfile: Dockerfile-old
     command: bash -c "sleep 300 && ./entrypoint.sh"
     environment:
       - HTTPS=FALSE
