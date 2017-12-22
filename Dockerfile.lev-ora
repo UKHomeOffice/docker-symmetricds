@@ -1,0 +1,3 @@
+FROM docker.digital.homeoffice.gov.uk/lev-ci/lev-ora:v0.0.3
+
+COPY init_only.sh /
