@@ -37,8 +37,8 @@ services:
       - DB_HOST=source
       - DB_TYPE=oracle
       - DB_NAME=XE
-      - DB_USER=system
-      - DB_PASS=oracle
+      - DB_USER=vrvweb_trn
+      - DB_PASS=password
       - SYNC_URL=http://symds_source:31415/sync/source
       - REPLICATE_TO=target
       - REPLICATE_TABLES=vrv_birth_tbl
