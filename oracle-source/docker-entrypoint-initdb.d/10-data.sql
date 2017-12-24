@@ -1,14 +1,22 @@
-CREATE TABLE "test"
+WHENEVER SQLERROR EXIT;
+
+COLUMN v NEW_VALUE username
+  SELECT COALESCE(SYS.GET_ENV('ORACLE_USER'), 'oracle') AS v
+  FROM DUAL;
+
+ALTER SESSION SET current_schema = &username;
+
+CREATE TABLE test
 (
-  "id" NUMBER PRIMARY KEY,
-  "name" VARCHAR2(256),
+  id NUMBER PRIMARY KEY,
+  name VARCHAR2(256),
   "date" DATE
 );
 
-INSERT INTO "test"
+INSERT INTO test
 (
-  "id",
-  "name",
+  id,
+  name,
   "date"
 )
 VALUES
@@ -18,10 +26,10 @@ VALUES
   date '2017-07-24'
 );
 
-INSERT INTO "test"
+INSERT INTO test
 (
-  "id",
-  "name",
+  id,
+  name,
   "date"
 )
 VALUES
@@ -31,10 +39,10 @@ VALUES
   date '2017-05-31'
 );
 
-INSERT INTO "test"
+INSERT INTO test
 (
-  "id",
-  "name",
+  id,
+  name,
   "date"
 )
 VALUES
@@ -44,10 +52,10 @@ VALUES
   date '1958-09-29'
 );
 
-INSERT INTO "test"
+INSERT INTO test
 (
-  "id",
-  "name",
+  id,
+  name,
   "date"
 )
 VALUES
