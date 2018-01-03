@@ -35,8 +35,8 @@ services:
       - DB_HOST=source
       - DB_TYPE=oracle
       - DB_NAME=XE
-      - DB_USER=system
-      - DB_PASS=oracle
+      - DB_USER=source
+      - DB_PASS=source
       - SYNC_URL=http://symds_source:31415/sync/source
       - REPLICATE_TO=target
       - REPLICATE_TABLES=test
@@ -46,6 +46,9 @@ services:
   source:
     build:
       context: oracle-source
+    environment:
+      - ORACLE_USER=source
+      - ORACLE_PASSWORD=source
     ports:
       - "1521:1521"
       - "8080:8080"
