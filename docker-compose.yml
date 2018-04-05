@@ -22,8 +22,8 @@ services:
       - SYNC_URL=http://symds_target:31415/sync/target
       - REGISTRATION_URL=http://symds_source:31415/sync/source
     ports:
-      - "31425:31415"
-      - "31427:31417"
+      - "31425"
+      - "31427"
   symds_source:
     build:
       context: .
@@ -39,8 +39,8 @@ services:
       - REPLICATE_TO=target
       - REPLICATE_TABLES=test other_table|name
     ports:
-      - "31415:31415"
-      - "31417:31417"
+      - "31415"
+      - "31417"
   source:
     build:
       context: postgres-source
