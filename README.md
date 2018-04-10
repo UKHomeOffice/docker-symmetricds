@@ -42,6 +42,15 @@ REPLICATE_TO: <Name of symmetric GROUP_ID to replicate to.>
 REPLICATE_TABLES: <Name of tables (space separated) and optional columns to replicate (columns are specified with a pipe and the comma separation). See [docker-compose] for more info.>
 ```
 
+Clustering
+----------
+
+Targets can be clustered in the example docker-compose files by simply using scale for example:
+
+```docker-compose up --scale symds_target=2```
+
+This will create a cluster of two targets.
+
 Example Usage
 -------------
 
