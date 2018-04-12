@@ -4,10 +4,10 @@ RUN yum install -y -q java-1.8.0-openjdk nmap-ncat openssl unzip \
  && yum update -y -q \
  && yum clean all \
  && rpm --rebuilddb \
- && useradd -rUm symds -d /app/ \
+ && useradd -rUm symds -u 10007 -d /app/ \
  && chown -R symds:symds /app/
 
-USER symds
+USER 10007
 WORKDIR /app
 
 ENV SYMMETRICDS_VERSION 3.8.32
@@ -25,5 +25,5 @@ RUN yum update -y -q \
  && yum clean all \
  && rpm --rebuilddb
 
-USER symds
+USER 10007
 CMD ["./entrypoint.sh"]
