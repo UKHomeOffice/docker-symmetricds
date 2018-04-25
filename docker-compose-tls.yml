@@ -14,6 +14,7 @@ services:
     environment:
       - GROUP_ID=target
       - DB_HOST=target
+      - DB_SSL=FALSE
       - DB_TYPE=postgres
       - DB_NAME=target
       - DB_USER=target
@@ -32,6 +33,7 @@ services:
     environment:
       - GROUP_ID=source
       - DB_HOST=source
+      - DB_SSL=FALSE
       - DB_TYPE=postgres
       - DB_NAME=source
       - DB_USER=source

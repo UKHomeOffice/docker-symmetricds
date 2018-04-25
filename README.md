@@ -26,6 +26,8 @@ Configuration is available using environment variables in order to configure the
 ```
 GROUP_ID: <Node Group that this Node is a member of. [SymmetricDSGroups]>
 DB_HOST: <Database host name>
+DB_SSL: Defines whether or not to use SSL/TLS. Set to FALSE to disable. Defaults to TRUE.
+DB_CA: A base64 encoded CA certificate to verify the database's certificate against. If no certificate is provided then the certificate will not be verified.
 DB_TYPE: <Used to tell symmetric what JDBC driver to use. Can be mysql, postgres or oracle. Defaults to postgres.>
 DB_NAME: <Database name>
 DB_USER: <Database user>

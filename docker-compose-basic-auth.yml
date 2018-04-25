@@ -23,6 +23,7 @@ services:
       - HTTPS=FALSE
       - GROUP_ID=target
       - DB_HOST=target
+      - DB_SSL=FALSE
       - DB_TYPE=postgres
       - DB_NAME=target
       - DB_USER=target
@@ -40,6 +41,7 @@ services:
       - HTTPS=FALSE
       - GROUP_ID=target2
       - DB_HOST=target2
+      - DB_SSL=FALSE
       - DB_TYPE=postgres
       - DB_NAME=target2
       - DB_USER=target2
