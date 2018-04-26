@@ -54,16 +54,15 @@ spec:
             - containerPort: 31415
               name: symmetricds
               protocol: TCP
-          livenessProbe:
+          readinessProbe:
             exec:
-              - /bin/sh
-              - -c
-              - ! curl http://127.0.0.1:31415/api/engine/node | grep batchInErrorCount
+              command:
+                - "/readinessProbe.sh"
             initialDelaySeconds: 60
             timeoutSeconds: 1
-          readinessProbe:
+          livenessProbe:
             httpGet:
-              path: /api/engine/node
+              path: /api/engine/status
               port: 31415
             initialDelaySeconds: 60
             timeoutSeconds: 1
