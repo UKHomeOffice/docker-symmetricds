@@ -18,6 +18,8 @@ DB_TYPE="${DB_TYPE:-postgres}"
 DB_NAME="${DB_NAME}"
 DB_USER="${DB_USER}"
 DB_PASS="${DB_PASS}"
+DB_SSL="${DB_SSL:-TRUE}"
+DB_CA="${DB_CA}"
 USERNAME="${USERNAME}"
 PASSWORD="${PASSWORD}"
 SYNC_URL="${SYNC_URL}"
@@ -58,6 +60,9 @@ HTTP_PORT="31415"
 HTTPS_ENABLE="false"
 HTTPS_PORT="31417"
 
+# Keystore password
+p="changeit"
+
 if [ "${HTTPS}" == "FALSE" ]; then
   HTTP_ENABLE="true"
   HTTP_PORT="${LISTEN_PORT:-${HTTP_PORT}}"
@@ -65,8 +70,6 @@ else
   LISTEN_PORT="${LISTEN_PORT:-31417}"
   HTTPS_ENABLE="true"
   HTTPS_PORT="${LISTEN_PORT:-${HTTPS_PORT}}"
-
-  p="changeit"
 
   if [[ -n "${HTTPS_CRT}" ]]; then
 
@@ -98,18 +101,36 @@ else
   fi
 fi
 
+if [ -n "${DB_CA}" ]; then
+    echo -n "${DB_CA}" | base64 -d > "${PWD}/db-ca.pem"
+    keytool -importcert -alias DBCACert -file "${PWD}/db-ca.pem" -keystore "${PWD}/db-ca.jks" -storepass "${p}"
+fi
+
+JDBC_URL_PARAMS=""
+
 case "${DB_TYPE}" in
   "mysql")
     DB_PORT="${DB_PORT:-3306}"
     DB_CMD="mysql -h \"${DB_HOST}\" -P \"${DB_POST}\" -u \"${DB_USER}\" -p\"${DB_PASS}\" \"${DB_NAME}\""
     JDBC_DRIVER="com.mysql.jdbc.Driver"
-    JDBC_URL="jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}"
+    if [ "${DB_SSL}" != "FALSE" ]; then
+        echo "Warning: SSL support MySQL has not been tested."
+        if [ -n "${DB_CA}" ]; then
+            JDBC_URL_PARAMS="?useSSL=true&requireSSL=true&clientCertificateKeyStoreUrl=${PWD}/db-ca.jks&clientCertificateKeyStorePassword=${p}"
+        else
+            JDBC_URL_PARAMS="?useSSL=true&requireSSL=true&verifyServerCertificate=false"
+        fi
+    fi
+    JDBC_URL="jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}${JDBC_URL_PARAMS}"
     echo "Warning: There appears to be a bug in MySQL support."
     ;;
   "oracle")
     DB_PORT="${DB_PORT:-1521}"
     DB_CMD="sqlplus64 \"${DB_USER}/${DB_PASS}@//${DB_HOST}:${DB_PORT}/${DB_NAME}\""
     JDBC_DRIVER="oracle.jdbc.driver.OracleDriver"
+    if [ "${DB_SSL}" != "FALSE" ]; then
+        echo "Warning: SSL is not yet supported for Oracle."
+    fi
     JDBC_URL="jdbc:oracle:thin:@${DB_HOST}:${DB_PORT}:${DB_NAME}"
     echo "Warning: Some docker images of Oracle will listen to their port before they are ready to accept connections which will break this image."
     ;;
@@ -117,7 +138,14 @@ case "${DB_TYPE}" in
     DB_PORT="${DB_PORT:-5432}"
     DB_CMD="PGPASSWORD=\"${DB_PASS}\" psql -w -h \"${DB_HOST}\" -p \"${DB_POST}\" \"${DB_NAME}\" \"${DB_USER}\""
     JDBC_DRIVER="org.postgresql.Driver"
-    JDBC_URL="jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}"
+    if [ "${DB_SSL}" != "FALSE" ]; then
+        if [ -n "${DB_CA}" ]; then
+            JDBC_URL_PARAMS="?ssl=true&sslrootcert=${PWD}/db-ca.pem&sslmode=verify-full"
+        else
+            JDBC_URL_PARAMS="?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory"
+        fi
+    fi
+    JDBC_URL="jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}${JDBC_URL_PARAMS}"
     ;;
 esac
 
