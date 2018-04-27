@@ -96,14 +96,20 @@ else
     keytool -importcert -noprompt \
             -keystore cacerts -storepass "${p}" -storetype jks \
             -file .cacerts/bundle
-    rm -rf tmp-cacerts
+    rm -rf .cacerts
     cd ..
   fi
 fi
 
 if [ -n "${DB_CA}" ]; then
-    echo -n "${DB_CA}" | base64 -d > "${PWD}/db-ca.pem"
-    keytool -importcert -alias DBCACert -file "${PWD}/db-ca.pem" -keystore "${PWD}/db-ca.jks" -storepass "${p}"
+    cd security
+    mkdir -p .cacerts
+    echo -n "${DB_CA}" | base64 -d > .cacerts/db-ca
+    keytool -importcert -noprompt \
+            -keystore cacerts -storepass "${p}" -storetype jks \
+            -file .cacerts/db-ca
+    rm -rf .cacerts
+    cd ..
 fi
 
 JDBC_URL_PARAMS=""
@@ -116,7 +122,7 @@ case "${DB_TYPE}" in
     if [ "${DB_SSL}" != "FALSE" ]; then
         echo "Warning: SSL support MySQL has not been tested."
         if [ -n "${DB_CA}" ]; then
-            JDBC_URL_PARAMS="?useSSL=true&requireSSL=true&clientCertificateKeyStoreUrl=${PWD}/db-ca.jks&clientCertificateKeyStorePassword=${p}"
+            JDBC_URL_PARAMS="?useSSL=true&requireSSL=true&clientCertificateKeyStoreUrl=${PWD}/security/cacerts&clientCertificateKeyStorePassword=${p}"
         else
             JDBC_URL_PARAMS="?useSSL=true&requireSSL=true&verifyServerCertificate=false"
         fi
@@ -140,7 +146,7 @@ case "${DB_TYPE}" in
     JDBC_DRIVER="org.postgresql.Driver"
     if [ "${DB_SSL}" != "FALSE" ]; then
         if [ -n "${DB_CA}" ]; then
-            JDBC_URL_PARAMS="?ssl=true&sslrootcert=${PWD}/db-ca.pem&sslmode=verify-full"
+            JDBC_URL_PARAMS="?ssl=true&sslrootcert=${PWD}/security/cacerts&sslmode=verify-full"
         else
             JDBC_URL_PARAMS="?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory"
         fi
