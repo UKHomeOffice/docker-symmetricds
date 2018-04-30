@@ -92,11 +92,10 @@ else
     cd security
     rm cacerts
     mkdir -p .cacerts
-    echo -n "${HTTPS_CA_BUNDLE}" | base64 -d > .cacerts/bundle
+    echo -n "${HTTPS_CA_BUNDLE}" | base64 -d > .cacerts/https.pem
     keytool -importcert -noprompt \
             -keystore cacerts -storepass "${p}" -storetype jks \
-            -file .cacerts/bundle
-    rm -rf .cacerts
+            -file .cacerts/https.pem
     cd ..
   fi
 fi
@@ -104,11 +103,10 @@ fi
 if [ -n "${DB_CA}" ]; then
     cd security
     mkdir -p .cacerts
-    echo -n "${DB_CA}" | base64 -d > .cacerts/db-ca
+    echo -n "${DB_CA}" | base64 -d > .cacerts/db.pem
     keytool -importcert -noprompt \
             -keystore cacerts -storepass "${p}" -storetype jks \
-            -file .cacerts/db-ca
-    rm -rf .cacerts
+            -file .cacerts/db.pem
     cd ..
 fi
 
@@ -146,7 +144,7 @@ case "${DB_TYPE}" in
     JDBC_DRIVER="org.postgresql.Driver"
     if [ "${DB_SSL}" != "FALSE" ]; then
         if [ -n "${DB_CA}" ]; then
-            JDBC_URL_PARAMS="?ssl=true&sslrootcert=${PWD}/security/cacerts&sslmode=verify-full"
+            JDBC_URL_PARAMS="?ssl=true&sslrootcert=${PWD}/security/.cacerts/db.pem&sslmode=verify-full"
         else
             JDBC_URL_PARAMS="?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory"
         fi
