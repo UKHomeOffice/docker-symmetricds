@@ -155,6 +155,7 @@ esac
 
 # Configure according to environment variables
 cat << EOL > "./conf/symmetric-server.properties"
+rest.api.enable=true
 host.bind.name=${LISTEN_HOST}
 http.enable=${HTTP_ENABLE}
 http.port=${HTTP_PORT}
@@ -166,6 +167,7 @@ jmx.http.port=31416
 EOL
 
 cat << EOL > "./engines/${ENGINE_NAME}-${EXTERNAL_ID}.properties"
+rest.api.enable=true
 engine.name=${ENGINE_NAME}
 group.id=${GROUP_ID}
 external.id=${EXTERNAL_ID}

@@ -54,6 +54,18 @@ spec:
             - containerPort: 31415
               name: symmetricds
               protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+                - "/readinessProbe.sh"
+            initialDelaySeconds: 60
+            timeoutSeconds: 1
+          livenessProbe:
+            httpGet:
+              path: /api/engine/status
+              port: 31415
+            initialDelaySeconds: 60
+            timeoutSeconds: 1
 ---
 apiVersion: v1
 kind: Service
