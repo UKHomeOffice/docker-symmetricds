@@ -1,7 +1,7 @@
 FROM quay.io/ukhomeofficedigital/centos-base:latest
 
-RUN yum install -y -q java-1.8.0-openjdk nmap-ncat openssl unzip epel-release \
- && yum install -y -q jq \
+RUN yum install -y -q epel-release \
+ && yum install -y -q java-1.8.0-openjdk nmap-ncat openssl unzip jq \
  && yum update -y -q \
  && yum clean all \
  && rpm --rebuilddb \
