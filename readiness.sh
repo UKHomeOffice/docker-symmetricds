@@ -1,11 +1,17 @@
 #! /bin/bash
 
 set -euo pipefail
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+# Defaults
 default_port="31415"
 protocol="https"
 
-if [ "${HTTPS:-}" == "FALSE" ]; then
+# Environment variables
+source "${SCRIPT_DIR}/env.cfg"
+
+# Handle non-HTTPS case
+if [ "${HTTPS}" == "FALSE" ]; then
   default_port="31415"
   protocol="http"
 fi

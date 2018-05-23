@@ -6,27 +6,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "${SCRIPT_DIR}/symmetric-server"
 
 # Environment variables
-LISTEN_HOST="${LISTEN_HOST:-0.0.0.0}"
-LISTEN_PORT="${LISTEN_PORT}"
-HTTPS="${HTTPS:-TRUE}"
-GROUP_ID="${GROUP_ID:-GROUP_ID}"
-ENGINE_NAME="${ENGINE_NAME:-${GROUP_ID}}"
-EXTERNAL_ID="${EXTERNAL_ID:-${GROUP_ID}}"
-DB_HOST="${DB_HOST:-localhost}"
-DB_PORT="${DB_PORT}"
-DB_TYPE="${DB_TYPE:-postgres}"
-DB_NAME="${DB_NAME}"
-DB_USER="${DB_USER}"
-DB_PASS="${DB_PASS}"
-DB_SSL="${DB_SSL:-TRUE}"
-DB_CA="${DB_CA}"
-USERNAME="${USERNAME}"
-PASSWORD="${PASSWORD}"
-SYNC_URL="${SYNC_URL}"
-REGISTRATION_URL="${REGISTRATION_URL}"
-REPLICATE_TO="${REPLICATE_TO}"
-REPLICATE_TABLES="${REPLICATE_TABLES}"
-REPLICATE_COLS=""
+source "${SCRIPT_DIR}/env.cfg"
 
 function mandatoryCheck () {
   if [[ -z "${1}" ]]; then
