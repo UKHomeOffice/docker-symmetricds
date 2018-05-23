@@ -18,4 +18,4 @@ fi
 
 port="${LISTEN_PORT:-${default_port}}"
 
-curl -fsSH "Accept: application/json" "${protocol}://127.0.0.1:${port}/api/engine/status" | jq -e '.started == true'
+curl -fskSH "Accept: application/json" "${protocol}://127.0.0.1:${port}/api/engine/status" | jq -e '.started == true'
