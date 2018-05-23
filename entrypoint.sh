@@ -186,12 +186,12 @@ EOL
 fi
 
 if [[ -n "${USERNAME}" && -n "${PASSWORD}" ]]; then
-# basic auth setup!!
-sed -i "s|</web-app>|<security-constraint><web-resource-collection><url-pattern>/sync/*</url-pattern></web-resource-collection><auth-constraint><role-name>user</role-name></auth-constraint></security-constraint><login-config><auth-method>BASIC</auth-method><realm-name>default</realm-name></login-config></web-app>|" ./web/WEB-INF/web.xml
+  # basic auth setup!!
+  sed -i "s|</web-app>|<security-constraint><web-resource-collection><url-pattern>/sync/*</url-pattern></web-resource-collection><auth-constraint><role-name>user</role-name></auth-constraint></security-constraint><login-config><auth-method>BASIC</auth-method><realm-name>default</realm-name></login-config></web-app>|" ./web/WEB-INF/web.xml
 
-echo -n "${USERNAME}: ${PASSWORD},user" >> ./web/WEB-INF/realm.properties
+  echo -n "${USERNAME}: ${PASSWORD},user" >> ./web/WEB-INF/realm.properties
 
-echo -e "<Configure class=\"org.eclipse.jetty.webapp.WebAppContext\"> \n
+  echo -e "<Configure class=\"org.eclipse.jetty.webapp.WebAppContext\"> \n
 <Get name=\"securityHandler\"> \n
 <Set name=\"loginService\"> \n
 <New class=\"org.eclipse.jetty.security.HashLoginService\"> \n
@@ -202,11 +202,11 @@ echo -e "<Configure class=\"org.eclipse.jetty.webapp.WebAppContext\"> \n
 </Get> \n
 </Configure>" >> ./web/WEB-INF/jetty-web.xml
 
-cat << EOL >> "./engines/${ENGINE_NAME}-${EXTERNAL_ID}.properties"
+  cat << EOL >> "./engines/${ENGINE_NAME}-${EXTERNAL_ID}.properties"
 http.basic.auth.username=${USERNAME}
 http.basic.auth.password=${PASSWORD}
 EOL
-#end of basic auth setup
+  #end of basic auth setup
 fi
 
 echo "Waiting for database at ${DB_HOST}:${DB_PORT}..."
@@ -240,19 +240,16 @@ insert into sym_router (router_id,
         current_timestamp, current_timestamp);
 EOL
 
-for REPLICATE_TABLE in $REPLICATE_TABLES
-do
+  for REPLICATE_TABLE in $REPLICATE_TABLES; do
+    if [[ $REPLICATE_TABLE == *"|"* ]]; then
+      echo 'Found cols in table config'
+      REPLICATE_COLS=${REPLICATE_TABLE#*|}
+      REPLICATE_TABLE=${REPLICATE_TABLE%|*}
+      echo "REPLICATE_TABLE=$REPLICATE_TABLE and REPLICATE_COLS=$REPLICATE_COLS"
+    fi
 
-if [[ $REPLICATE_TABLE == *"|"* ]]
-then
-  echo 'Found cols in table config'
-  REPLICATE_COLS=${REPLICATE_TABLE#*|}
-  REPLICATE_TABLE=${REPLICATE_TABLE%|*}
-  echo "REPLICATE_TABLE=$REPLICATE_TABLE and REPLICATE_COLS=$REPLICATE_COLS"
-fi
-
-echo "Adding config for $REPLICATE_TABLE in ${DB_TYPE}..."
-cat << EOL >> "init.sql"
+    echo "Adding config for $REPLICATE_TABLE in ${DB_TYPE}..."
+    cat << EOL >> "init.sql"
 insert into sym_channel
 (channel_id, processing_order, max_batch_size, max_batch_to_send, extract_period_millis, batch_algorithm, enabled)
       values ('${REPLICATE_TABLE}', 10, 1000, 10, 0, 'default', 1);
@@ -265,7 +262,7 @@ insert into sym_trigger_router
 (trigger_id, router_id, initial_load_order, create_time, last_update_time)
       values ('${REPLICATE_TABLE}', '${GROUP_ID}-2-${REPLICATE_TO}', 1, current_timestamp, current_timestamp);
 EOL
-done
+  done
 
   ./bin/symadmin --engine "${GROUP_ID}" create-sym-tables
   ./bin/dbimport --engine "${GROUP_ID}" "init.sql"
