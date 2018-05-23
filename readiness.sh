@@ -4,7 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Defaults
-default_port="31415"
+default_port="31417"
 protocol="https"
 
 # Environment variables
