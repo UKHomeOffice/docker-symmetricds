@@ -1,16 +1,15 @@
-#!/bin/bash
-set -eo pipefail
+#! /bin/bash
 
-LISTEN_PORT="${LISTEN_PORT}"
-HTTPS="${HTTPS:-TRUE}"
-PROTOCOL="https"
+set -euo pipefail
 
-if [ "${HTTPS}" == "FALSE" ]; then
-  LISTEN_PORT="${LISTEN_PORT:-31415}"
-  PROTOCOL="http"
-else
-  LISTEN_PORT="${LISTEN_PORT:-31417}"
-  PROTOCOL="https"
+default_port="31415"
+protocol="https"
+
+if [ "${HTTPS:-}" == "FALSE" ]; then
+  default_port="31415"
+  protocol="http"
 fi
 
-curl -H "Accept: application/json" "${PROTOCOL}://127.0.0.1:${LISTEN_PORT}/api/engine/status" | jq -e '.started == true'
+port="${LISTEN_PORT:-${default_port}}"
+
+curl -H "Accept: application/json" "${protocol}://127.0.0.1:${port}/api/engine/status" | jq -e '.started == true'
