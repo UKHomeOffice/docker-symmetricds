@@ -57,7 +57,7 @@ spec:
           readinessProbe:
             exec:
               command:
-                - "/readinessProbe.sh"
+                - "./readiness.sh"
             initialDelaySeconds: 60
             timeoutSeconds: 1
           livenessProbe:

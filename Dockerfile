@@ -19,7 +19,7 @@ RUN MINOR=`echo "${SYMMETRICDS_VERSION}" | sed 's/\.[^.]*$//'` \
  && rm 'symmetricds.zip' \
  && ln -s "symmetric-server-${SYMMETRICDS_VERSION}/" 'symmetric-server'
 
-COPY entrypoint.sh readiness.sh /app/
+COPY entrypoint.sh env.cfg readiness.sh /app/
 
 USER root
 RUN yum update -y -q \
