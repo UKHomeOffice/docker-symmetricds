@@ -43,6 +43,8 @@ HTTPS_PORT="31417"
 # Keystore password
 p="changeit"
 
+cd security
+
 if [ "${HTTPS}" == "FALSE" ]; then
   HTTP_ENABLE="true"
   HTTP_PORT="${LISTEN_PORT:-${HTTP_PORT}}"
@@ -51,37 +53,46 @@ else
   HTTPS_ENABLE="true"
   HTTPS_PORT="${LISTEN_PORT:-${HTTPS_PORT}}"
 
-  if [[ -n "${HTTPS_CRT}" ]]; then
+  mkdir -p .keystore
+  rm keystore
 
+  if [[ -n "${HTTPS_CRT}" ]]; then
+    # Use provided key-pair
     mandatoryCheck "${HTTPS_KEY}" "HTTPS_KEY"
 
-    cd security
-    rm keystore
-    mkdir -p .keystore
     echo -n "${HTTPS_CRT}" | base64 -d > .keystore/crt
     echo -n "${HTTPS_KEY}" | base64 -d > .keystore/key
-    openssl pkcs12 -export -out .keystore/keystore.p12 -inkey .keystore/key -in .keystore/crt -name "sym" -passout "pass:${p}"
-    keytool -importkeystore -noprompt \
-            -srckeystore .keystore/keystore.p12 -srcstoretype PKCS12 -srcstorepass "${p}" -srcalias "sym" \
-            -destkeystore keystore -deststoretype jceks -deststorepass "${p}" -destalias "sym"
-    rm -rf .keystore
-    cd ..
+  else
+    # No key-pair provided so auto-generate one
+	  openssl genrsa -out .keystore/key 4096
+	  openssl req \
+		        -new \
+		        -x509 \
+		        -sha256 \
+		        -days 365 \
+		        -key .keystore/key \
+		        -subj "/CN=${HOSTNAME}" \
+		        -out .keystore/crt
   fi
 
-  if [[ -n "${HTTPS_CA_BUNDLE}" ]]; then
-    cd security
+  openssl pkcs12 -export -out .keystore/keystore.p12 -inkey .keystore/key -in .keystore/crt -name "sym" -passout "pass:${p}"
+  keytool -importkeystore -noprompt \
+          -srckeystore .keystore/keystore.p12 -srcstoretype PKCS12 -srcstorepass "${p}" -srcalias "sym" \
+          -destkeystore keystore -deststoretype jceks -deststorepass "${p}" -destalias "sym"
+
+  rm -rf .keystore
+fi
+
+if [[ -n "${HTTPS_CA_BUNDLE}" ]]; then
     rm cacerts
     mkdir -p .cacerts
     echo -n "${HTTPS_CA_BUNDLE}" | base64 -d > .cacerts/https.pem
     keytool -importcert -noprompt \
             -keystore cacerts -storepass "${p}" -storetype jks \
             -file .cacerts/https.pem
-    cd ..
-  fi
 fi
 
 if [ -n "${DB_CA}" ]; then
-    cd security
     mkdir -p .cacerts
     echo -n "${DB_CA}" | base64 -d > .cacerts/db.pem
     keytool -importcert -noprompt \
@@ -89,6 +100,8 @@ if [ -n "${DB_CA}" ]; then
             -file .cacerts/db.pem
     cd ..
 fi
+
+cd ..
 
 JDBC_URL_PARAMS=""
 
