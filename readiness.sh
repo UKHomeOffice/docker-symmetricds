@@ -6,9 +6,15 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # Defaults
 default_port="31417"
 protocol="https"
+auth=""
 
 # Environment variables
 source "${SCRIPT_DIR}/env.cfg"
+
+# Set-up param for auth
+if [ -n "${USERNAME}" ]; then
+  auth="-u ${USERNAME}:${PASSWORD}"
+fi
 
 # Handle non-HTTPS case
 if [ "${HTTPS}" == "FALSE" ]; then
@@ -18,4 +24,4 @@ fi
 
 port="${LISTEN_PORT:-${default_port}}"
 
-curl -fskSH "Accept: application/json" "${protocol}://127.0.0.1:${port}/api/engine/status" | jq -e '.started == true'
+curl -fskSH "Accept: application/json" ${auth} "${protocol}://127.0.0.1:${port}/api/engine/status" | jq -e '.started == true'
