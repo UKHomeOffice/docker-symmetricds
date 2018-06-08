@@ -57,6 +57,7 @@ services:
       - HTTPS=FALSE
       - GROUP_ID=source
       - DB_HOST=source
+      - DB_SSL=FALSE
       - DB_TYPE=postgres
       - DB_NAME=source
       - DB_USER=source

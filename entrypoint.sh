@@ -180,7 +180,7 @@ fi
 
 if [[ -n "${USERNAME}" && -n "${PASSWORD}" ]]; then
   # basic auth setup!!
-  sed -i "s|</web-app>|<security-constraint><web-resource-collection><url-pattern>/sync/*</url-pattern></web-resource-collection><auth-constraint><role-name>user</role-name></auth-constraint></security-constraint><login-config><auth-method>BASIC</auth-method><realm-name>default</realm-name></login-config></web-app>|" ./web/WEB-INF/web.xml
+  sed -i "s|</web-app>|<security-constraint><web-resource-collection><url-pattern>/*</url-pattern></web-resource-collection><auth-constraint><role-name>user</role-name></auth-constraint></security-constraint><login-config><auth-method>BASIC</auth-method><realm-name>default</realm-name></login-config></web-app>|" ./web/WEB-INF/web.xml
 
   echo -n "${USERNAME}: ${PASSWORD},user" >> ./web/WEB-INF/realm.properties
 
