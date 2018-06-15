@@ -17,7 +17,10 @@ RUN MINOR=`echo "${SYMMETRICDS_VERSION}" | sed 's/\.[^.]*$//'` \
  && curl -L -o 'symmetricds.zip' "https://downloads.sourceforge.net/project/symmetricds/symmetricds/symmetricds-${MINOR}/symmetric-server-${SYMMETRICDS_VERSION}.zip" \
  && unzip 'symmetricds.zip' \
  && rm 'symmetricds.zip' \
- && ln -s "symmetric-server-${SYMMETRICDS_VERSION}/" 'symmetric-server'
+ && ln -s "symmetric-server-${SYMMETRICDS_VERSION}/" 'symmetric-server' \
+ && rm '/app/symmetric-server/lib/postgresql-9.4-1212.jre7.jar' \
+ && curl -L -o '/app/symmetric-server/lib/postgresql-42.2.2.jar' 'https://jdbc.postgresql.org/download/postgresql-42.2.2.jar'
+# NOTE: the last 2 lines simply upgrade the PostgreSQL DB support, and can probably be removed when we update SymmetrocDS
 
 COPY entrypoint.sh env.cfg liveness.sh readiness.sh /app/
 
