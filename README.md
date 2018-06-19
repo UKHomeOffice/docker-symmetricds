@@ -15,6 +15,7 @@ and run:
 ```bash
 $ git clone git@github.com:UKHomeOffice/docker-symmetricds.git
 $ cd docker-symmetricds
+$ make
 $ docker-compose up
 ```
 
