@@ -98,7 +98,6 @@ if [ -n "${DB_CA}" ]; then
     keytool -importcert -noprompt \
             -keystore cacerts -storepass "${p}" -storetype jks \
             -file .cacerts/db.pem
-    cd ..
 fi
 
 cd ..
