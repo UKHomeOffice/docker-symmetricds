@@ -14,6 +14,18 @@ function mandatoryCheck () {
   fi
 }
 
+# Log4J logging LOG_LEVEL
+# ALL	    All levels including custom levels.
+# DEBUG	  Designates fine-grained informational events that are most useful to debug an application.
+# ERROR	  Designates error events that might still allow the application to continue running.
+# FATAL	  Designates very severe error events that will presumably lead the application to abort.
+# INFO    Designates informational messages that highlight the progress of the application at coarse-grained level.
+# OFF	    The highest possible rank and is intended to turn off logging.
+# TRACE	  Designates finer-grained informational events than the DEBUG.
+# WARN    Designates potentially harmful situations.
+LOG_LEVEL="${LOG_LEVEL:-INFO}"
+
+
 mandatoryCheck "${SYNC_URL}" "SYNC_URL"
 mandatoryCheck "${DB_NAME}" "DB_NAME"
 mandatoryCheck "${DB_USER}" "DB_USER"
@@ -156,6 +168,26 @@ https.port=${HTTPS_PORT}
 https.allow.self.signed.certs=false
 jmx.http.enable=false
 jmx.http.port=31416
+EOL
+
+cat << EOL > "./conf/log4j.xml"
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
+
+    <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+        <param name="Target" value="System.err" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%m%n" />
+        </layout>
+    </appender>
+
+    <root>
+        <priority value="${LOG_LEVEL}" />
+        <appender-ref ref="CONSOLE" />
+    </root>
+
+</log4j:configuration>
 EOL
 
 cat << EOL > "./engines/${ENGINE_NAME}-${EXTERNAL_ID}.properties"
