@@ -15,16 +15,7 @@ function mandatoryCheck () {
 }
 
 # Log4J logging LOG_LEVEL
-# ALL	    All levels including custom levels.
-# DEBUG	  Designates fine-grained informational events that are most useful to debug an application.
-# ERROR	  Designates error events that might still allow the application to continue running.
-# FATAL	  Designates very severe error events that will presumably lead the application to abort.
-# INFO    Designates informational messages that highlight the progress of the application at coarse-grained level.
-# OFF	    The highest possible rank and is intended to turn off logging.
-# TRACE	  Designates finer-grained informational events than the DEBUG.
-# WARN    Designates potentially harmful situations.
-LOG_LEVEL="${LOG_LEVEL:-INFO}"
-
+LOG_LEVEL="${LOG_LEVEL:-WARN}"
 
 mandatoryCheck "${SYNC_URL}" "SYNC_URL"
 mandatoryCheck "${DB_NAME}" "DB_NAME"
