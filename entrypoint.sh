@@ -298,5 +298,5 @@ EOL
 fi
 
 # Start SymmetricDS
-echo "Starting SymmtricDS..."
+echo "Starting SymmetricDS..."
 exec "./bin/sym"
