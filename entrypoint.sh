@@ -14,7 +14,9 @@ function mandatoryCheck () {
   fi
 }
 
-# Log4J logging LOG_LEVEL
+# Log4J logging level for channels that may contain data
+DATA_LOG_LEVEL="${DATA_LOG_LEVEL:-FATAL}"
+# Log4J logging level for all other channels
 LOG_LEVEL="${LOG_LEVEL:-WARN}"
 
 mandatoryCheck "${SYNC_URL}" "SYNC_URL"
@@ -173,6 +175,15 @@ cat << EOL > "./conf/log4j.xml"
         </layout>
     </appender>
 
+    <category name="oracle.jdbc">
+        <priority value="${DATA_LOG_LEVEL}" />
+    </category>
+    <category name="org.mysql">
+        <priority value="${DATA_LOG_LEVEL}" />
+    </category>
+    <category name="org.postgresql">
+        <priority value="${DATA_LOG_LEVEL}" />
+    </category>
     <root>
         <priority value="${LOG_LEVEL}" />
         <appender-ref ref="CONSOLE" />
