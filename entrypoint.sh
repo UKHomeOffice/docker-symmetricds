@@ -14,6 +14,11 @@ function mandatoryCheck () {
   fi
 }
 
+# Log4J logging level for channels that may contain data
+DATA_LOG_LEVEL="${DATA_LOG_LEVEL:-FATAL}"
+# Log4J logging level for all other channels
+LOG_LEVEL="${LOG_LEVEL:-WARN}"
+
 mandatoryCheck "${SYNC_URL}" "SYNC_URL"
 mandatoryCheck "${DB_NAME}" "DB_NAME"
 mandatoryCheck "${DB_USER}" "DB_USER"
@@ -158,6 +163,35 @@ jmx.http.enable=false
 jmx.http.port=31416
 EOL
 
+cat << EOL > "./conf/log4j.xml"
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
+
+    <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+        <param name="Target" value="System.err" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%m%n" />
+        </layout>
+    </appender>
+
+    <category name="oracle.jdbc">
+        <priority value="${DATA_LOG_LEVEL}" />
+    </category>
+    <category name="org.mysql">
+        <priority value="${DATA_LOG_LEVEL}" />
+    </category>
+    <category name="org.postgresql">
+        <priority value="${DATA_LOG_LEVEL}" />
+    </category>
+    <root>
+        <priority value="${LOG_LEVEL}" />
+        <appender-ref ref="CONSOLE" />
+    </root>
+
+</log4j:configuration>
+EOL
+
 cat << EOL > "./engines/${ENGINE_NAME}-${EXTERNAL_ID}.properties"
 rest.api.enable=true
 engine.name=${ENGINE_NAME}
@@ -266,5 +300,5 @@ EOL
 fi
 
 # Start SymmetricDS
-echo "Starting SymmtricDS..."
+echo "Starting SymmetricDS..."
 exec "./bin/sym"

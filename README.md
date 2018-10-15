@@ -43,6 +43,8 @@ HTTPS_KEY: <Key for provided certificate.>
 HTTPS_CA_BUNDLE: <Certificate authority for HTTPS used to verify other nodes. In a two node setup this could be the other nodes public certificate.>
 REPLICATE_TO: <Name of symmetric GROUP_ID to replicate to.>
 REPLICATE_TABLES: <Name of tables (space separated) and optional columns to replicate (columns are specified with a pipe and the comma separation). See [docker-compose] for more info.>
+LOG_LEVEL: <Set the log4j level. Can be: OFF, FATAL, ERROR, WARN, INFO, DEBUG, TRACE, ALL. Defaults to WARN>
+DATA_LOG_LEVEL: <Set the log4j level on things that may output data. Can be: OFF, FATAL, ERROR, WARN, INFO, DEBUG, TRACE, ALL. Defaults to FATAL>
 ```
 
 Clustering
