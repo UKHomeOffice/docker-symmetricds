@@ -71,15 +71,15 @@ else
     echo -n "${HTTPS_KEY}" | base64 -d > .keystore/key
   else
     # No key-pair provided so auto-generate one
-	  openssl genrsa -out .keystore/key 4096
-	  openssl req \
-		        -new \
-		        -x509 \
-		        -sha256 \
-		        -days 365 \
-		        -key .keystore/key \
-		        -subj "/CN=${HOSTNAME}" \
-		        -out .keystore/crt
+    openssl genrsa -out .keystore/key 4096
+    openssl req \
+            -new \
+            -x509 \
+            -sha256 \
+            -days 365 \
+            -key .keystore/key \
+            -subj "/CN=${HOSTNAME}" \
+            -out .keystore/crt
   fi
 
   openssl pkcs12 -export -out .keystore/keystore.p12 -inkey .keystore/key -in .keystore/crt -name "sym" -passout "pass:${p}"
