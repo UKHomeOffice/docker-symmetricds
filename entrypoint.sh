@@ -14,6 +14,8 @@ function mandatoryCheck () {
   fi
 }
 
+# Log4J logging level standard SymmetricDS channels
+SYMDS_LOG_LEVEL="${LOG_LEVEL:-INFO}"
 # Log4J logging level for channels that may contain data
 DATA_LOG_LEVEL="${DATA_LOG_LEVEL:-FATAL}"
 # Log4J logging level for all other channels
@@ -164,16 +166,84 @@ jmx.http.port=31416
 EOL
 
 cat << EOL > "./conf/log4j.xml"
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to JumpMind Inc under one or more contributor
+    license agreements.  See the NOTICE file distributed
+    with this work for additional information regarding
+    copyright ownership.  JumpMind Inc licenses this file
+    to you under the GNU General Public License, version 3.0 (GPLv3)
+    (the "License"); you may not use this file except in compliance
+    with the License.
+
+    You should have received a copy of the GNU General Public License,
+    version 3.0 (GPLv3) along with this library; if not, see
+    <http://www.gnu.org/licenses/>.
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
 
-    <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
-        <param name="Target" value="System.err" />
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%m%n" />
+    <appender name="ROLLING" class="org.jumpmind.util.SymRollingFileAppender">
+        <param name="File" value="\${log4j.sym.home}/logs/symmetric.log" />
+        <param name="MaxFileSize" value="20MB" />
+        <param name="MaxBackupIndex" value="3" />
+        <param name="Append" value="true" />
+        <layout class="org.jumpmind.symmetric.web.SymPatternLayout">
+            <param name="ConversionPattern" value="%d %p [%X{engineName}] [%c{1}] [%t] %m%n" />
         </layout>
     </appender>
+
+    <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+        <param name="Target" value="System.err" />
+        <layout class="org.jumpmind.symmetric.web.SymPatternLayout">
+            <param name="ConversionPattern" value="%d{ISO8601} %p: [%X{engineName}] - %c{1} - %m%n" />
+        </layout>
+    </appender>
+
+    <appender name="BUFFERED" class="org.jumpmind.util.BufferedLogAppender"/>
+
+    <!-- Uncomment to send errors over email.  (1/2) -->
+    <!--
+    <appender name="EMAIL" class="org.apache.log4j.net.SMTPAppender">
+        <param name="SMTPHost" value="mymailhost" />
+        <param name="SMTPUsername" value="" />
+        <param name="SMTPPassword" value="" />
+        <param name="From" value="user@nowhere" />
+        <param name="To" value="user@nowhere" />
+        <param name="Subject" value="Error from SymmetricDS" />
+        <param name="BufferSize" value="10" />
+        <param name="LocationInfo" value="true" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%t %m%n"/>
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="error" />
+            <param name="LevelMax" value="fatal" />
+        </filter>
+    </appender>
+    -->
+
+    <category name="org">
+        <priority value="${LOG_LEVEL}" />
+    </category>
+
+    <category name="org.jumpmind">
+        <priority value="${SYMDS_LOG_LEVEL}" />
+    </category>
+
+    <category name="com.mangofactory.swagger.filters.AnnotatedParameterFilter">
+        <priority value="ERROR" />
+    </category>
 
     <category name="oracle.jdbc">
         <priority value="${DATA_LOG_LEVEL}" />
@@ -184,9 +254,100 @@ cat << EOL > "./conf/log4j.xml"
     <category name="org.postgresql">
         <priority value="${DATA_LOG_LEVEL}" />
     </category>
+    <category name="org.jumpmind.db">
+        <priority value="${DATA_LOG_LEVEL}" />
+    </category>
+    <category name="org.jumpmind.db.sql">
+        <priority value="${DATA_LOG_LEVEL}" />
+    </category>
+    <category name="org.jumpmind.db.platform">
+        <priority value="${DATA_LOG_LEVEL}" />
+    </category>
+    <category name="org.jumpmind.symmetric.io.data">
+        <priority value="${DATA_LOG_LEVEL}" />
+    </category>
+    <category name="org.jumpmind.symmetric.db">
+        <priority value="${DATA_LOG_LEVEL}" />
+    </category>
+    <category name="org.jumpmind.symmetric.db.SqlScript">
+        <priority value="${DATA_LOG_LEVEL}" />
+    </category>
+
+    <!-- Disable the not found override properties file warnings to avoid confusion -->
+    <category name="org.jumpmind.symmetric.util.PropertiesFactoryBean">
+        <priority value="ERROR" />
+    </category>
+
+    <category name="org.jumpmind.symmetric.service.impl.ParameterService">
+        <priority value="ERROR" />
+    </category>
+
+    <category name="org.springframework">
+        <priority value="ERROR" />
+    </category>
+
+    <category name="com.vaadin.server.DefaultDeploymentConfiguration">
+        <priority value="ERROR" />
+    </category>
+
+    <category name="com.vaadin.event.ConnectorActionManager">
+        <priority value="ERROR" />
+    </category>
+
+    <category name="com.vaadin.server.communication">
+        <priority value="FATAL" />
+    </category>
+
+    <category name="org.atmosphere">
+        <priority value="FATAL" />
+    </category>
+
+    <!-- Uncomment to see CSV protocol from sending batches -->
+    <!--
+    <category name="org.jumpmind.symmetric.io.data.writer.ProtocolDataWriter">
+        <priority value="DEBUG"/>
+    </category>
+    -->
+
+    <!-- Uncomment to see SQL statements from loading batches -->
+    <!--
+    <category name="org.jumpmind.symmetric.io.data.writer.DefaultDatabaseWriter">
+        <priority value="DEBUG" />
+    </category>
+    -->
+
+    <!-- Enable this to see debug messages in JMS publishing extensions -->
+    <!--
+    <category name="org.jumpmind.symmetric.integrate">
+        <priority value="DEBUG" />
+    </category>
+    -->
+
+    <!-- Enable this to see debug messages for why SymmetricDS tables are being altered -->
+    <!--
+    <category name="org.jumpmind.db.alter">
+        <priority value="DEBUG" />
+    </category>
+    -->
+
+    <!-- In order to see http headers enable this, and also edit logging.properties
+    <category name="sun.net.www.protocol.http.HttpURLConnection">
+        <priority value="ALL" />
+    </category>
+     -->
+
+    <!-- Change the "CONSOLE" to "ROLLING" to log to a file instead -->
     <root>
         <priority value="${LOG_LEVEL}" />
         <appender-ref ref="CONSOLE" />
+        <!--
+        <appender-ref ref="ROLLING" />
+        <appender-ref ref="BUFFERED" />
+        -->
+        <!-- Uncomment to send errors over email. (2/2) -->
+        <!--
+        <appender-ref ref="EMAIL" />
+        -->
     </root>
 
 </log4j:configuration>
