@@ -18,6 +18,9 @@ RUN MINOR=`echo "${SYMMETRICDS_VERSION}" | sed 's/\.[^.]*$//'` \
  && unzip 'symmetricds.zip' \
  && rm 'symmetricds.zip' \
  && ln -s "symmetric-server-${SYMMETRICDS_VERSION}/" 'symmetric-server'
+ 
+RUN rm symmetric-server/lib/mysql-connector-java-*.jar \
+ && curl -L -o 'symmetric-server/lib/mysql-connector-java-8.0.20.jar' "https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.20/mysql-connector-java-8.0.20.jar"
 
 COPY entrypoint.sh env.cfg liveness.sh readiness.sh /app/
 
