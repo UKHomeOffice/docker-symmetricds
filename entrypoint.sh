@@ -123,6 +123,8 @@ case "${DB_TYPE}" in
         else
             JDBC_URL_PARAMS="?useSSL=true&requireSSL=true&verifyServerCertificate=false"
         fi
+    else
+        JDBC_URL_PARAMS="?allowPublicKeyRetrieval=true&useSSL=false"
     fi
     JDBC_URL="jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}${JDBC_URL_PARAMS}"
     echo "Warning: There appears to be a bug in MySQL support."
@@ -147,6 +149,8 @@ case "${DB_TYPE}" in
         else
             JDBC_URL_PARAMS="?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory"
         fi
+    else
+        JDBC_URL_PARAMS="?ssl=false"
     fi
     JDBC_URL="jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}${JDBC_URL_PARAMS}"
     ;;
