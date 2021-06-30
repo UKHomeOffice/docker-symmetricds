@@ -11,14 +11,14 @@ RUN yum install -y -q epel-release \
 USER 10007
 WORKDIR /app
 
-ENV SYMMETRICDS_VERSION 3.9.8
+ENV SYMMETRICDS_VERSION 3.12.10
 
 RUN MINOR=`echo "${SYMMETRICDS_VERSION}" | sed 's/\.[^.]*$//'` \
  && curl -L -o 'symmetricds.zip' "https://downloads.sourceforge.net/project/symmetricds/symmetricds/symmetricds-${MINOR}/symmetric-server-${SYMMETRICDS_VERSION}.zip" \
  && unzip 'symmetricds.zip' \
  && rm 'symmetricds.zip' \
  && ln -s "symmetric-server-${SYMMETRICDS_VERSION}/" 'symmetric-server'
- 
+
 RUN rm symmetric-server/lib/mysql-connector-java-*.jar \
  && curl -L -o 'symmetric-server/lib/mysql-connector-java-8.0.20.jar' "https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.20/mysql-connector-java-8.0.20.jar"
 
