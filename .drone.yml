@@ -8,38 +8,31 @@ platform:
   arch: amd64
 
 steps:
-- name: build_image
-  pull: if-not-exists
-  image: docker:17.09.0-ce
-  commands:
-  - docker build -t symmetricds .
-  environment:
-    DOCKER_HOST: tcp://127.0.0.1:2375
-  when:
-    event:
-    - pull_request
-    - tag
+  - name: docker-build
+    pull: if-not-exists
+    image: plugins/docker
+    settings:
+      dry_run: true
+      repo: quay.io/ukhomeofficedigital/symmetricds
+    when:
+      event:
+        - pull_request
 
-- name: push_image_to_quay
-  pull: if-not-exists
-  image: docker:17.09.0-ce
-  commands:
-  - docker login -u="$${DOCKER_USERNAME}" -p="$${DOCKER_QUAY_PASSWORD}" "$${DOCKER_REPO}"
-  - ./publish.sh "symmetricds" "$${DOCKER_REPO}$${DOCKER_BASEDIR}$${DOCKER_IMAGE}" "$${DRONE_TAG}"
-  environment:
-    DOCKER_BASEDIR: /ukhomeofficedigital/
-    DOCKER_HOST: tcp://127.0.0.1:2375
-    DOCKER_IMAGE: symmetricds
-    DOCKER_QUAY_PASSWORD:
-      from_secret: docker_quay_password
-    DOCKER_REPO: quay.io
-    DOCKER_USERNAME: ukhomeofficedigital+symmetricds
-  when:
-    event:
-    - tag
-
-services:
-  - name: docker
-    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+  - name: docker-build-and-push
+    pull: if-not-exists
+    image: plugins/docker
+    settings:
+      registry: quay.io/ukhomeofficedigital
+      repo: quay.io/ukhomeofficedigital/symmetricds
+      tags:
+        - "${DRONE_TAG}"
+        - "latest"
+      username: ukhomeofficedigital+symmetricds
+    environment:
+      DOCKER_PASSWORD:
+        from_secret: docker_quay_password
+    when:
+      event:
+        - tag
 
 ...
