@@ -26,9 +26,7 @@ steps:
       registry: quay.io/ukhomeofficedigital
       repo: quay.io/ukhomeofficedigital/symmetricds
       tags:
-        - "v3.5.1"
-        - "v3.5"
-        - "v3"
+        - "${DRONE_TAG}"
         - "latest"
       username: ukhomeofficedigital+symmetricds
     environment:
