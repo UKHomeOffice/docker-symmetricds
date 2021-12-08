@@ -17,7 +17,6 @@ steps:
     when:
       event:
         - pull_request
-        - tag
 
   - name: docker-build-and-push
     pull: if-not-exists
