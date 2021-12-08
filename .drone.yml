@@ -14,7 +14,7 @@ steps:
   commands:
   - docker build -t symmetricds .
   environment:
-    DOCKER_HOST: tcp://172.17.0.1:2375
+    DOCKER_HOST: tcp://127.0.0.1:2375
   when:
     event:
     - pull_request
@@ -28,7 +28,7 @@ steps:
   - ./publish.sh "symmetricds" "$${DOCKER_REPO}$${DOCKER_BASEDIR}$${DOCKER_IMAGE}" "$${DRONE_TAG}"
   environment:
     DOCKER_BASEDIR: /ukhomeofficedigital/
-    DOCKER_HOST: tcp://172.17.0.1:2375
+    DOCKER_HOST: tcp://127.0.0.1:2375
     DOCKER_IMAGE: symmetricds
     DOCKER_QUAY_PASSWORD:
       from_secret: docker_quay_password
@@ -37,5 +37,9 @@ steps:
   when:
     event:
     - tag
+
+services:
+  - name: docker
+    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
 
 ...
