@@ -25,8 +25,7 @@ steps:
       registry: quay.io/ukhomeofficedigital
       repo: quay.io/ukhomeofficedigital/symmetricds
       tags:
-        - "${DRONE_TAG}"
-        - "latest"
+        - "test-upgrade"
       username: ukhomeofficedigital+symmetricds
     environment:
       DOCKER_PASSWORD:
