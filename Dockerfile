@@ -1,10 +1,9 @@
-FROM quay.io/ukhomeofficedigital/centos-base:latest
+FROM almalinux:latest
 
-RUN yum install -y -q epel-release \
- && yum install -y -q java-1.8.0-openjdk nmap-ncat openssl unzip jq \
- && yum update -y -q \
- && yum clean all \
- && rpm --rebuilddb \
+RUN dnf install -y -q epel-release \
+ && dnf install -y -q java-1.8.0-openjdk nmap-ncat openssl unzip jq \
+ && dnf update -y -q \
+ && dnf clean all \
  && useradd -rUm symds -u 10007 -d /app/ \
  && chown -R symds:symds /app/
 
@@ -25,9 +24,8 @@ RUN rm symmetric-server/lib/mysql-connector-java-*.jar \
 COPY entrypoint.sh env.cfg liveness.sh readiness.sh /app/
 
 USER root
-RUN yum update -y -q \
- && yum clean all \
- && rpm --rebuilddb
+RUN dnf update -y -q \
+ && dnf clean all
 
 USER 10007
 CMD ["./entrypoint.sh"]

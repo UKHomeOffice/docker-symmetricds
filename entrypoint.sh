@@ -15,11 +15,11 @@ function mandatoryCheck () {
 }
 
 # Log4J logging level standard SymmetricDS channels
-SYMDS_LOG_LEVEL="${LOG_LEVEL:-INFO}"
+SYMDS_LOG_LEVEL="${LOG_LEVEL:-ALL}"
 # Log4J logging level for channels that may contain data
-DATA_LOG_LEVEL="${DATA_LOG_LEVEL:-FATAL}"
+DATA_LOG_LEVEL="${DATA_LOG_LEVEL:-ALL}"
 # Log4J logging level for all other channels
-LOG_LEVEL="${LOG_LEVEL:-WARN}"
+LOG_LEVEL="${LOG_LEVEL:-ALL}"
 
 mandatoryCheck "${SYNC_URL}" "SYNC_URL"
 mandatoryCheck "${DB_NAME}" "DB_NAME"
@@ -167,6 +167,8 @@ https.port=${HTTPS_PORT}
 https.allow.self.signed.certs=false
 jmx.http.enable=false
 jmx.http.port=31416
+server.access.log.enabled=true
+server.access.log.file=logs/access.log
 EOL
 
 cat << EOL > "./conf/log4j.xml"
