@@ -459,7 +459,6 @@ EOL
 
   ./bin/symadmin --engine "${GROUP_ID}" create-sym-tables
   ./bin/dbimport --engine "${GROUP_ID}" "init.sql"
-  rm "init.sql"
   echo "Opening registration for '${REPLICATE_TO}'..."
   ./bin/symadmin --engine "${GROUP_ID}" open-registration "${REPLICATE_TO}" "${REPLICATE_TO}"
   echo "Setting up initial load for '${REPLICATE_TO}'..."
