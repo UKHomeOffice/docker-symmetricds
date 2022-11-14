@@ -10,7 +10,7 @@ RUN dnf install -y -q epel-release \
 USER 10007
 WORKDIR /app
 
-ENV SYMMETRICDS_VERSION 3.13.4
+ENV SYMMETRICDS_VERSION 3.13.3
 
 RUN MINOR=`echo "${SYMMETRICDS_VERSION}" | sed 's/\.[^.]*$//'` \
  && curl -L -o 'symmetricds.zip' "https://downloads.sourceforge.net/project/symmetricds/symmetricds/symmetricds-${MINOR}/symmetric-server-${SYMMETRICDS_VERSION}.zip" \
