@@ -27,7 +27,5 @@ USER root
 RUN dnf update -y -q \
  && dnf clean all
 
-COPY sym_service.conf /app/symmetric-server/conf
-
 USER 10007
 CMD ["./entrypoint.sh"]
