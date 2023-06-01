@@ -25,7 +25,7 @@ steps:
       registry: quay.io/ukhomeofficedigital
       repo: quay.io/ukhomeofficedigital/symmetricds
       tags:
-        - "v3.5.9"
+        - "v3.6.0"
       username: ukhomeofficedigital+symmetricds
     environment:
       DOCKER_PASSWORD:
